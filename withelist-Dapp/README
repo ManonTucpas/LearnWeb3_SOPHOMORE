@@ -1,0 +1,130 @@
+
+HARDHAT :
+
+We'll be using Hardhat to build a smart contract. 
+It is an Ethereum developement environment and framework designed for full stack dev in Solidity
+Used to: 
+    - write smart contract
+    - deploy contracts
+    - run tests
+    - debug the code
+
+
+#####               #####
+##### SMARTCONTRACT #####
+
+
+###### New Hardhat project ######
+In the folder we'll create a new folder 'hardhat-tutorial', then launch 
+-> npm init --yes (create the package.json)
+-> npm install --save-dev hardhat
+-> npx hardhat to create a project
+    Select Create a Javascript project
+    Press enter for the already specified Hardhat Project root
+    Press enter for the question on if you want to add a .gitignore
+    Press enter for Do you want to install this sample project's dependencies with npm (@nomicfoundation/hardhat-toolbox)?
+
+If you are not on mac, please do this extra step and install these libraries as well :)
+
+npm install --save-dev @nomicfoundation/hardhat-toolbox
+
+
+###### Step 1 ######
+Create a contract named Whitelist.sol in the contract's folder
+Define the variables needed  & create a function to add the adresses in the whitelist.
+
+###### Step 2 ######
+In the script folder change the deploy.js file. 
+In the main function:
+1. Create an instance of the Whitelist contract:
+
+    const whitelistContract = await ethers.getContractFactory("Whitelist");
+
+2. Deploy this instance. 
+10 in the max number of whielisted adresses, we declare what we want and in the constructor of the Whitelist contract we'll set this value:
+ 
+    const deployedWhitelistContract = await whitelistContract.deploy(10);
+
+3. Wait it to finish deploying
+    await deployedWhitelistContract.deployed();
+
+4. Print the address of the deployed contract
+    
+      console.log(
+    "Whitelist Contract Address:",
+    deployedWhitelistContract.address
+  );
+}
+
+5. Call the main function to catch any error
+    main()
+        .then(() => process.exit(0))
+        .catch((error) => {
+            console.error(error);
+            process.ext(1)
+        });
+
+###### Step 3 ######
+Create a .env file to put inside
+    1. ALCHEMY_API_KEY_URL
+    2. RINKEBY_PRIVATE_KEY (must be founded with Rinkeby Ether or GoerliETH, Rinkeby will be depreciated in the futur, due to the merge. The testnet will be Goerli)
+
+###### Step 4 ######
+We need to install "dotenv" package to be able to import the env file in our config.
+    npm install dotenv
+Then, in the hardhat.config.js, we have to add the environment variables.
+
+###### Step 5 ######
+Compile the contract :D 
+    npx hardhat compile
+
+###### Step 6 ######
+Deploy the contract
+
+    npx hardhat run scripts/deploy.js --network rinkeby
+
+Then save the contract address somewhere
+    ➜  hardhat-tutorial npx hardhat run scripts/deploy.js --network rinkeby
+    Whitelist Contract Address: 0x[...]691
+
+
+#####         #####
+##### WEBSITE #####
+
+###### Step 1 ######
+We'll use React and Next Js
+React is a javascript framework used to make websites and Next.js is a React framework that also allows writing backend APIs code along with the frontend, so you don't need two separate frontend and backend services.
+Go back to root folder
+Create a next-app
+    npx create-next-app@latest
+    cd my-app
+    npm run dev
+
+    The app is running at http://localhost:3000/
+
+###### Step 2 ######
+Install Web3Modal library
+It is a library to help developers easily allow their users to connect to your dApps with all sorts of different wallets. By default Web3Modal Library supports injected providers like (Metamask, Dapper, Gnosis Safe, Frame, Web3 Browsers, etc) and WalletConnect
+    npm install web3modal
+
+Then install ether.js library
+    npm insall ethers
+
+###### Step 3 ######
+Change style and index.js
+
+###### Step 4 ######
+create a 'constants' folder under my-app
+then create a file index.js 
+paste this 
+    export const WHITELIST_CONTRACT_ADDRESS = "YOUR_WHITELIST_CONTRACT_ADDRESS";
+    export const abi = YOUR_ABI;
+
+    replace with the contract address
+Replace "YOUR_ABI" with the ABI of your Whitelist Contract. Go to your hardhat-tutorial/artifacts/contracts/Whitelist.sol folder and from your Whitelist.json file get the array marked under the "abi" key (it will be. a huge array, close to 100 lines if not more).
+
+###### Step 5 ######
+In my-app
+    npm run dev
+
+    The whitelist Dapp should work :D
